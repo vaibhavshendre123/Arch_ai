@@ -34,23 +34,25 @@ Verification totals: **unit 363/363 · integration 61/61 · E2E 49/49 · build c
 
 ---
 
-## Phase 8 — Close the test coverage gaps (highest value)
+## Phase 8 — Close the test coverage gaps (DONE)
 
-Route-by-route status of the browser suite:
+Every route now has a real browser journey. Verified by checking each route against a
+content marker unique to it, rather than assuming the suite grew:
 
 | Route | Coverage |
 |---|---|
-| `/login` `/register` `/projects` `/builder` `/settings` | Real journeys |
-| `/simulation` | Real journeys |
-| `/evaluation` `/comparison` `/interview` `/learning` | URL only — proven to render, never exercised |
-| `/dashboard` `/process-mining` `/recommendations` `/reports` | **None** |
+| `/login` `/register` | Journey |
+| `/projects` `/builder` `/settings` | Journey |
+| `/simulation` | Journey, including reload persistence and reduced motion |
+| `/dashboard` `/process-mining` `/evaluation` `/recommendations` `/reports` | Journey |
+| `/comparison` `/interview` `/learning` | Journey, reached by URL and asserted absent from the sidebar |
 
-Process Mining and Evaluation are the academic core of the project and a regression there
-would ship silently today.
+`e2e/pipeline.spec.js` walks simulate → mine → evaluate → recommend → report → dashboard in a
+single session, because Process Mining consumes the event log and that is deliberately never
+persisted. `e2e/hidden-routes.spec.js` covers the three routes withdrawn from the sidebar,
+including that each redirects to `/login` when signed out.
 
-Known constraint: `/process-mining` consumes the simulation **event log**, which is
-deliberately not persisted. Its journey test must therefore simulate and mine within one page
-session rather than across a reload.
+Verification totals are now **unit 363 · integration 61 · E2E 66**.
 
 ---
 
