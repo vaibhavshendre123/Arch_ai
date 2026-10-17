@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: arch-ai-backend
+    runtime: node
+    region: oregon
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_NAME
+        value: archai
+      # Allow every origin for now so the frontend works before we know its final
+      # Vercel URL. Tighten to the exact Vercel origin once the URL is stable.
+      - key: CORS_ORIGINS
+        value: '*'
+      # Secrets: paste the same values as backend/.env in the Render dashboard,
+      # or let Render generate the JWT secret (sessions start fresh in prod).
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: GEMINI_API_KEY
+        sync: false
